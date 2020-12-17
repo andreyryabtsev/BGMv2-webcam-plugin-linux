@@ -9,13 +9,7 @@ Upon returning, cycle through different target backgrounds by clicking.
 Press Q any time to exit.
 
 Example:
-
-    python demo_webcam.py \
-        --model-type mattingrefine \
-        --model-backbone resnet50 \
-        --model-checkpoint "PATH_TO_CHECKPOINT" \
-        --resolution 1280 720
-
+python demo_webcam.py --model-checkpoint "PATH_TO_CHECKPOINT" --resolution 1280 720 --hide-fps
 """
 
 import argparse, os, shutil, time
