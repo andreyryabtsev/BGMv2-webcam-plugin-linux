@@ -24,18 +24,12 @@ import cv2
 import torch
 
 from torch import nn
-from torch.utils.data import DataLoader
+from torch.utils.data import Dataset, DataLoader
 from torchvision.transforms import Compose, ToTensor, Resize
 from torchvision.transforms.functional import to_pil_image
 from threading import Thread, Lock
 from tqdm import tqdm
 from PIL import Image
-
-from dataset import VideoDataset
-from torchvision import transforms as T
-from model import MattingBase, MattingRefine
-from model_bm import MattingBM
-
 import pyfakewebcam # pip install pyfakewebcam
 
 # --------------- App setup ---------------
@@ -52,8 +46,6 @@ app = {
 
 parser = argparse.ArgumentParser(description='Virtual webcam demo')
 
-parser.add_argument('--model-type', type=str, required=True, choices=['mattingbase', 'mattingrefine', 'mattingbm'])
-parser.add_argument('--model-backbone', type=str, required=True, choices=['resnet101', 'resnet50', 'mobilenetv2'])
 parser.add_argument('--model-backbone-scale', type=float, default=0.25)
 parser.add_argument('--model-checkpoint', type=str, required=True)
 parser.add_argument('--model-refine-mode', type=str, default='sampling', choices=['full', 'sampling', 'thresholding'])
@@ -206,25 +198,51 @@ class Controller: # A cv2 window with a couple buttons for background capture an
                 if x > control["x"] and x < control["x"] + control["w"] and y > control["y"] and y < control["y"] + control["h"]:
                     self.clicked(control)
                     
+class VideoDataset(Dataset):
+    def __init__(self, path: str, transforms: any = None):
+        self.cap = cv2.VideoCapture(path)
+        self.transforms = transforms
+        
+        self.width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        self.height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        self.frame_rate = self.cap.get(cv2.CAP_PROP_FPS)
+        self.frame_count = int(self.cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    
+    def __len__(self):
+        return self.frame_count
+    
+    def __getitem__(self, idx):
+        if isinstance(idx, slice):
+            return [self[i] for i in range(*idx.indices(len(self)))]
+        
+        if self.cap.get(cv2.CAP_PROP_POS_FRAMES) != idx:
+            self.cap.set(cv2.CAP_PROP_POS_FRAMES, idx)
+        ret, img = self.cap.read()
+        if not ret:
+            raise IndexError(f'Idx: {idx} out of length: {len(self)}')
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img = Image.fromarray(img)
+        if self.transforms:
+            img = self.transforms(img)
+        return img
+    
+    def __enter__(self):
+        return self
+    
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        self.cap.release()
 
 
 # --------------- Main ---------------
 
 
 # Load model
-if args.model_type == 'mattingbase':
-    model = MattingBase(args.model_backbone)
-elif args.model_type == 'mattingrefine':
-    model = MattingRefine(
-        args.model_backbone,
-        args.model_backbone_scale,
-        args.model_refine_mode,
-        args.model_refine_sample_pixels,
-        args.model_refine_threshold)
-else:
-    model = MattingBM(args.model_backbone)
-model = model.cuda().eval()
-model.load_state_dict(torch.load(args.model_checkpoint))
+model = torch.jit.load(args.model_checkpoint)
+model.backbone_scale = args.model_backbone_scale
+model.refine_mode = args.model_refine_mode
+model.refine_sample_pixels = args.model_refine_sample_pixels
+model.model_refine_threshold = args.model_refine_threshold
+model.cuda().eval()
 
 
 width, height = args.resolution
@@ -239,7 +257,7 @@ def cv2_frame_to_cuda(frame):
     return ToTensor()(Image.fromarray(frame)).unsqueeze_(0).cuda()
 
 preloaded_image = cv2_frame_to_cuda(cv2.imread(args.target_image))
-tb_video = VideoDataset(args.target_video, transforms=T.ToTensor())
+tb_video = VideoDataset(args.target_video, transforms=ToTensor())
 
 def grab_bgr():
     bgr_frame = cam.read()
