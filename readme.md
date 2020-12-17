@@ -1,4 +1,4 @@
-The goal of this repository is to supplement the [main Real-Time High Resolution Background Matting repo](TODO link) with a working demo of a videoconferencing plugin (e.g. the code used in our promotional demos).
+The goal of this repository is to supplement the [main Real-Time High Resolution Background Matting repo]([TODO link](https://github.com/PeterL1n/BackgroundMattingV2)) with a working demo of a videoconferencing plugin (e.g. the code used in our promotional demos).
 
 # Prerequisites
 This plugin requires Linux, because it relies on the [v4l2loopback kernel module](https://github.com/umlaeute/v4l2loopback) to create and stream to virtual video devices. We welcome and encourage community adaptations to other platforms.
