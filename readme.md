@@ -4,7 +4,7 @@ The goal of this repository is to supplement the [main Real-Time High Resolution
 This plugin requires Linux, because it relies on the [v4l2loopback kernel module](https://github.com/umlaeute/v4l2loopback) to create and stream to virtual video devices. We welcome and encourage community adaptations to other platforms.
 
 1. Install v4l2loopback. On Debian/Ubuntu, the command is likely `sudo apt-get install v4l2loopback-utils`.
-2. Clone and set up the main repository, and copy the script there (optionally with the demo image & video).
+2. Clone and set up the main repository, and copy the script there (optionally with the demo image & video). Follow `requirements.txt` in original repo.
 3. Install [pyfakewebcam](https://github.com/jremmons/pyfakewebcam) (Python interface for v4l2loopback, install with `pip install pyfakewebcam`)
 
 # Directions
@@ -12,7 +12,7 @@ Before running the plugin, the virtual web camera device needs to be created.
 ```
 sudo modprobe v4l2loopback devices=1
 ```
-The above command should create a single virtual webcam at `/dev/video1', which is the default stream output for the plugin script. This webcam can now be selected by software such as Zoom, browsers, etc.
+The above command should create a single virtual webcam at `/dev/video1` (the number may change), which is the default stream output for the plugin script. This webcam can now be selected by software such as Zoom, browsers, etc.
 
 Once the plugin is launched, a simple OpenCV-based UI will show two buttons:
 - Toggle between background selection view and (after snapping a background) actual matting

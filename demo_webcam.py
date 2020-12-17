@@ -63,7 +63,7 @@ parser.add_argument('--model-refine-threshold', type=float, default=0.7)
 parser.add_argument('--hide-fps', action='store_true')
 parser.add_argument('--resolution', type=int, nargs=2, metavar=('width', 'height'), default=(1280, 720))
 parser.add_argument('--target-video', type=str, default='./demo_video.mp4')
-parser.add_argument('--target-image', type=str, default='./demo_image.png')
+parser.add_argument('--target-image', type=str, default='./demo_image.jpg')
 parser.add_argument('--camera-device', type=str, default='/dev/video1')
 args = parser.parse_args()
 
