@@ -14,7 +14,7 @@ sudo modprobe v4l2loopback devices=1
 ```
 The above command should create a single virtual webcam at `/dev/video1` (the number may change), which is the default stream output for the plugin script. This webcam can now be selected by software such as Zoom, browsers, etc.
 
-After downloading the right weights, launch the pluging with e.g.:
+After downloading the TorchScript weights of your choice [here](https://drive.google.com/drive/u/1/folders/1cbetlrKREitIgjnIikG1HdM4x72FtgBh), launch the pluging with e.g.:
 ```python demo_webcam.py --model-checkpoint torchscript_resnet50_fp32.pth```
 
 Once the plugin is launched, a simple OpenCV-based UI will show two buttons:
