@@ -278,6 +278,8 @@ def app_step():
             vidframe = tb_video[app["target_background_frame"]].unsqueeze_(0).cuda()
             tgt_bgr = nn.functional.interpolate(vidframe, (fgr.shape[2:]))
             app["target_background_frame"] += 1
+            if app["target_background_frame"] >= tb_video.__len__():
+                app["target_background_frame"] = 0
         elif app["compose_mode"] == "gaussian":
             tgt_bgr = app["bgr_blur"]
             
