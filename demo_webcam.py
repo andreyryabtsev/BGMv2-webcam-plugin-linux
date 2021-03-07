@@ -525,20 +525,6 @@ def grab_bgr():
     app["bgr_blur"] = cv2_frame_to_cuda(bgr_blur)
 
 
-def shift_image(img, dx, dy):
-    img = np.roll(img, dy, axis=0)
-    img = np.roll(img, dx, axis=1)
-    if dy > 0:
-        img[:dy, :] = 0
-    elif dy < 0:
-        img[dy:, :] = 0
-    if dx > 0:
-        img[:, :dx] = 0
-    elif dx < 0:
-        img[:, dx:] = 0
-    return img
-
-
 def app_step():
     if app["mode"] == "background":
         frame = cam.read()
