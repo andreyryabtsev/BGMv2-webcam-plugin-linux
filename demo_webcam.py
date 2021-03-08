@@ -284,7 +284,6 @@ class Controller:
                 if 'torchscript_' in entry.name:
                     model_name = self.to_short_model_name(entry.name)
                     models.append((model_name, model_checkpoint_dir + entry.name))
-                    print(entry.name)
                     if model_name == current_model:
                         self.model_checkpoint_index = len(models)
                         self.control_index["model_checkpoint"]["label"] = model_name
@@ -316,7 +315,6 @@ class Controller:
         cv2.imshow(self.name, control_image)
 
     def clicked(self, control):
-        print("control clicked: " + control["name"])
         if control["name"] == "mode_switch":
             self.switch_mode(control)
         elif control["name"] == "compose_switch":
@@ -365,7 +363,6 @@ class Controller:
     def update_model_checkpoint(self):
         next_idx = (self.model_checkpoint_index + 1) % len(self.model_checkpoint_cycle)
         bgmModel.model_checkpoint = self.model_checkpoint_cycle[next_idx][1]
-        print(self.model_checkpoint_cycle[next_idx][1])
         self.model_checkpoint_index = next_idx
         self.control_index["model_checkpoint"]["label"] = self.model_checkpoint_cycle[next_idx][0]
         bgmModel.reload()
@@ -506,8 +503,6 @@ class BGModel:
         self.model.refine_mode = self.refine_mode
         self.model.refine_sample_pixels = self.refine_sample_pixels
         self.model.model_refine_threshold = self.refine_threshold
-        # print(self.refine_mode + " , " + str(self.refine_sample_pixels) + ", " +
-        #       str(self.refine_threshold)+ ", " + str(self.backbone_scale))
         self.model.cuda().eval()
 
 
