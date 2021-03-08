@@ -279,14 +279,13 @@ class Controller:
             return ()
         models = []
         current_model = self.to_short_model_name(bgmModel.model_checkpoint)
-        with os.scandir(model_checkpoint_dir) as entries:
-            for entry in entries:
-                if 'torchscript_' in entry.name:
-                    model_name = self.to_short_model_name(entry.name)
-                    models.append((model_name, model_checkpoint_dir + entry.name))
-                    if model_name == current_model:
-                        self.model_checkpoint_index = len(models)
-                        self.control_index["model_checkpoint"]["label"] = model_name
+        for filename in os.listdir(model_checkpoint_dir):
+            if 'torchscript_' in filename:
+                model_name = self.to_short_model_name(filename)
+                models.append((model_name, os.path.join(model_checkpoint_dir, filename)))
+                if model_name == current_model:
+                    self.model_checkpoint_index = len(models)
+                    self.control_index["model_checkpoint"]["label"] = model_name
         return models
 
     def hide_all_except_mode(self):
@@ -557,7 +556,7 @@ def load_args():
     parser = argparse.ArgumentParser(description='Virtual webcam demo')
 
     parser.add_argument('--model-backbone-scale', type=float, default=0.25)
-    parser.add_argument('--model-checkpoint', type=str, required=False)
+    parser.add_argument('--model-checkpoint', type=str, required=True)
     parser.add_argument('--model-checkpoint-dir', type=str, required=False)
 
     parser.add_argument('--model-refine-mode', type=str, default='sampling',

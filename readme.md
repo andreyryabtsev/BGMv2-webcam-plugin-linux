@@ -31,4 +31,7 @@ For best results:
 1. Avoid blocking bright light, especially during background capture.
 2. Avoid changing light conditions. For prolonged use, it may be helpful to re-take the background as light conditions drift.
 
+# Community Contributions
+1. [@kevinlester](https://github.com/kevinlester/BGMv2-webcam-plugin-linux) added many realtime settings to the UI controls
+2. [@KostiaChorny](https://github.com/KostiaChorny/BGMv2-webcam-plugin-linux) added Windows OBS virtual camera support (not merged but please visit their fork)
 Thanks to [CK FreeVideoTemplates](https://www.youtube.com/watch?v=DHRUNWdf3ms) on YouTube for the seasonal video target background.
