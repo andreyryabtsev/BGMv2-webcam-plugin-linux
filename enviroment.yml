@@ -86,4 +86,3 @@ dependencies:
     - tqdm==4.51.0
     - urllib3==1.26.4
     - werkzeug==1.0.1
-prefix: /home/ccd/miniconda3/envs/BGMv2
